@@ -1,0 +1,45 @@
+# Development environment override
+services:
+  php:
+    build:
+      context: .
+      target: frankenphp_dev
+    volumes:
+      - ./:/app
+      - ./docker/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./docker/frankenphp/conf.d/20-app.dev.ini:/usr/local/etc/php/app.conf.d/20-app.dev.ini:ro
+      # If you develop on Mac or Windows you can remove the vendor/ directory
+      #  from the bind-mount for better performance by enabling the next line:
+      #- /app/vendor
+    environment:
+      MERCURE_EXTRA_DIRECTIVES: demo
+      # See https://xdebug.org/docs/all_settings#mode
+      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+    tty: true
+
+###> symfony/mercure-bundle ###
+###< symfony/mercure-bundle ###
+
+###> doctrine/doctrine-bundle ###
+  database:
+    ports:
+      - "5432"
+###< doctrine/doctrine-bundle ###
+
+  
+  phpmyadmin:
+    container_name: "phpmyadmin"
+    image: phpmyadmin:latest
+    depends_on:
+      - database
+    # restart: always
+    environment:
+      PMA_PORT: "3306"
+      PMA_HOST: "database"
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 81:80
