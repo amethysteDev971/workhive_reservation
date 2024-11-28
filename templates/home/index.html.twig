@@ -7,14 +7,21 @@
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
-
+<div class="position-relative">
+        <div class="position-absolute top-0 start-0">
+            <p><a class="link-opacity-100-hover" href="{{ path('app_room')}}">Rooms</a></p>
+            <p><a class="link-opacity-100-hover" href="{{ path('app_user')}}">Users</a></p>
+        </div>  
+    </div>
 <div class="example-wrapper">
     <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/app/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>/app/templates/home/index.html.twig</code></li>
-    </ul>
+     {# <a href="{{ path('nom_de_la_route', { 'nom_param1': valeur_param1 }) }}" class="btn btn-primary btn-sm"> #}
+    {# <div class="row">
+        <p><a class="link-opacity-100-hover" href="{{ path('app_room')}}">Rooms</a></p>
+        <p><a class="link-opacity-100-hover" href="{{ path('app_user')}}">Users</a></p>
+    </div> #}
+    <div class="row text-center d-flex justify-content-center align-items-center mt-5">
+     <img class="img-thumbnail col-6" src="{{ asset('images/images.png') }}" alt="Symfony!"/>
+    </div>
 </div>
 {% endblock %}
