@@ -9,14 +9,17 @@
     use Doctrine\Common\Collections\ArrayCollection;
     use Doctrine\Common\Collections\Collection;
     use Doctrine\ORM\Mapping as ORM;
+    use Symfony\Component\Security\Core\User\UserInterface;
+    use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
     /**
      * Represents a user in the application.
      */
     #[ORM\Entity(repositoryClass: UserRepository::class)]
     #[ORM\Table(name: 'users')]
-    class User
+    class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
+
         /**
          * The unique identifier of the user.
          *
@@ -123,12 +126,13 @@
         #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
         private Collection $reservations;
 
+
         /**
          * Initializes the user with default values and empty collections.
          */
         public function __construct()
         {
-            $this->userRole = UserRole::USER;
+            $this->userRole = UserRole::ROLE_USER;
             $this->status = Status::ACTIVE;
             $this->createdAt = new DateTime();
             $this->paymentMethods = new ArrayCollection();
@@ -426,4 +430,32 @@
 
             return $this;
         }
+
+        /**
+         * @see UserInterface
+         */
+        public function getRoles(): array
+        {
+            return [$this->getUserRole()->name];
+        }
+
+        /**
+         * @see UserInterface
+         */
+        public function eraseCredentials(): void
+        {
+            // If you store any temporary, sensitive data on the user, clear it here
+            // $this->plainPassword = null;
+        }
+
+        /**
+         * The public representation of the user (e.g. a username, an email address, etc.)
+         *
+         * @see UserInterface
+         */
+        public function getUserIdentifier(): string
+        {
+            return (string) $this->email;
+        }
+
     }

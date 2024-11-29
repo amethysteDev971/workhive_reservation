@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
 {
@@ -26,7 +27,7 @@ class UserController extends AbstractController
 
     
     #[Route('admin/user/create', name: 'app_user_create')]
-    public function createUser(EntityManagerInterface $em,Request $request): Response
+    public function createUser(EntityManagerInterface $em,Request $request,UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
 
@@ -37,6 +38,10 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
+            $plainPassword = $user->getPassword();
+            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+
             $em->persist($user);
             $em->flush();
 
@@ -52,7 +57,7 @@ class UserController extends AbstractController
     }
 
     #[Route('admin/user/update/{id}', name: 'app_user_update')]
-    public function updateUser(EntityManagerInterface $em,Request $request, $id): Response
+    public function updateUser(EntityManagerInterface $em,Request $request, $id,UserPasswordHasherInterface $passwordHasher): Response
     {
 
         // dump($id);
@@ -63,8 +68,11 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $room = $form->getData();
-            $em->persist($room);
+            $user = $form->getData();
+            $plainPassword = $user->getPassword();
+            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+            $em->persist($user);
             $em->flush();
 
             return $this->redirectToRoute('app_user');
