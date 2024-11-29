@@ -56,28 +56,36 @@ class UserController extends AbstractController
     {
 
         // dump($id);
-        // $user = $em->getRepository(User::class)->find($id);
-        // $user = $this->createForm(User::class, $user);
+        $user = $em->getRepository(User::class)->find($id);
+        $form = $this->createForm(UserType::class, $user);
 
-        // $form->handleRequest($request);
+        $form->handleRequest($request);
 
-        // if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
-        //     $room = $form->getData();
-        //     $em->persist($room);
-        //     $em->flush();
+            $room = $form->getData();
+            $em->persist($room);
+            $em->flush();
 
-        //     return $this->redirectToRoute('app_room');
-        // }
+            return $this->redirectToRoute('app_user');
+        }
 
-        // return $this->render('admin/room/create_room.html.twig', [
-        //     'controller_name' => 'RoomController Create',
-        //     'form' => $form,
-        // ]);
         return $this->render('admin/room/create_room.html.twig', [
             'controller_name' => 'RoomController Create',
-            // 'form' => $form,
+            'form' => $form,
         ]);
+        
+    }
+
+    #[Route('admin/user/delete/{id}', name: 'app_user_delete')]
+    public function deleteRoom(EntityManagerInterface $em,Request $request, $id): Response
+    {
+        $user = $em->getRepository(User::class)->find($id);
+        $em->remove($user);
+        $em->flush();
+
+
+        return $this->redirectToRoute('app_user');
     }
 
 }

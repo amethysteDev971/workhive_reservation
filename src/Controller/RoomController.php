@@ -94,8 +94,5 @@ class RoomController extends AbstractController
 
 
         return $this->redirectToRoute('app_room');
-        return $this->render('admin/room/index.html.twig', [
-            'controller_name' => 'RoomController',
-        ]);
     }
 }
