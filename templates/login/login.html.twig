@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'layout/base.html.twig' %} #}
+{% extends 'bootstrap_material_base.html.twig' %}
 
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <form action="{{ path('app_login') }}" method="post">
+    {# <form action="{{ path('app_login') }}" method="post">
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
@@ -20,9 +21,7 @@
         <label for="password">Password</label>
         <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
 
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
-        >
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"> #}
 
         {#
             Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
@@ -34,8 +33,51 @@
             </div>
         #}
 
-        <button class="btn btn-lg btn-primary" type="submit">
+        {# <button class="btn btn-lg btn-primary" type="submit">
             Sign in
         </button>
-    </form>
+    </form> #}
+    <section class="h-100">
+    <div class="container d-flex flex-column h-100 py-4">
+        <div class="row justify-content-center h-100">
+            <div class="col-lg-7 mx-auto d-flex justify-content-center flex-column">
+                <h3 class="text-center">Se connecter</h3>
+                <form action="{{ path('app_login') }}" role="form" id="contact-form" method="post" autocomplete="off">
+                {# {{ form_start(form, { 'attr': { 'class': 'needs-validation', 'novalidate': 'novalidate' } }) }} #}
+                {# {{ form_start(form, { 'attr': { 'id': 'contact-form', 'role': 'form' , 'method':'post', 'autocomplete':'off'} }) }} #}
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="mb-4">
+                                <div class="input-group input-group-dynamic">
+                                    <label class="form-label">Email Address</label>
+                                    {# <input type="email" class="form-control"> #}
+                                    <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+                                </div>
+                            </div>
+                            <div class="input-group mb-4 input-group-static">
+                                <label>Your message</label>
+                                {# <textarea name="message" class="form-control" id="message" rows="4"></textarea> #}
+                                <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                        {# <div class="col-md-12">
+                            <div class="form-check form-switch mb-4 d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked="">
+                            <label class="form-check-label ms-3 mb-0" for="flexSwitchCheckDefault">I agree to the <a href="javascript:;" class="text-dark"><u>Terms and Conditions</u></a>.</label>
+                            </div>
+                        </div> #}
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                        </div>
+                        </div>
+                    </div>
+                </form>
+                {# {{ form_end(form) }} #}
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
