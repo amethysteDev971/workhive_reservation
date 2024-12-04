@@ -12,6 +12,10 @@
     use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     use Symfony\Component\Security\Core\User\UserInterface;
     use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+    use Symfony\Component\Serializer\Annotation\Groups;
+    use Symfony\Component\Validator\Constraints as Assert;
+
+    
 
     /**
      * Represents a user in the application.
@@ -30,6 +34,7 @@
         #[ORM\Id]
         #[ORM\GeneratedValue]
         #[ORM\Column(type: 'integer')]
+        #[Groups(['user:read'])]
         private ?int $id = null;
 
         /**
@@ -38,6 +43,8 @@
          * @var string
          */
         #[ORM\Column(type: 'string', length: 50)]
+        #[Groups(['user:read', 'user:write'])]
+        #[Assert\NotBlank]
         private string $firstName;
 
         /**
@@ -46,6 +53,8 @@
          * @var string
          */
         #[ORM\Column(type: 'string', length: 50)]
+        #[Groups(['user:read', 'user:write'])]
+        #[Assert\NotBlank]
         private string $lastName;
 
         /**
@@ -54,6 +63,7 @@
          * @var string|null
          */
         #[ORM\Column(type: 'string', length: 255, nullable: true)]
+        #[Groups(['user:read', 'user:write'])]
         private ?string $photo;
 
         /**
@@ -62,6 +72,7 @@
          * @var UserRole|null
          */
         #[ORM\Column(enumType: UserRole::class)]
+        #[Groups(['user:read', 'user:write'])]
         private ?UserRole $userRole;
 
         /**
@@ -70,6 +81,7 @@
          * @var string|null
          */
         #[ORM\Column(type: 'string', length: 15, nullable: true)]
+        #[Groups(['user:read', 'user:write'])]
         private ?string $phone;
 
         /**
@@ -78,6 +90,11 @@
          * @var string
          */
         #[ORM\Column(type: 'string', length: 100, unique: true)]
+        #[Groups(['user:read', 'user:write'])]
+        #[Assert\NotBlank]
+        #[Assert\Email(
+            message: 'The email {{ value }} is not a valid email.',
+        )]
         private string $email;
 
         /**
@@ -86,6 +103,8 @@
          * @var string
          */
         #[ORM\Column(type: 'string')]
+        #[Groups(['user:write'])]
+        #[Assert\NotBlank]
         private string $password;
 
         /**
@@ -94,6 +113,7 @@
          * @var Status|null
          */
         #[ORM\Column(enumType: Status::class)]
+        #[Groups(['user:read', 'user:write'])]
         private ?Status $status = null;
 
         /**
@@ -102,6 +122,7 @@
          * @var DateTime
          */
         #[ORM\Column(type: 'datetime')]
+        #[Groups(['user:read'])]
         private DateTime $createdAt;
 
         /**
@@ -110,6 +131,7 @@
          * @var DateTime|null
          */
         #[ORM\Column(type: 'datetime', nullable: true)]
+        #[Groups(['user:read', 'user:write'])]
         private ?DateTime $updatedAt;
 
         /**
@@ -118,6 +140,7 @@
          * @var Collection<int, PaymentMethod>
          */
         #[ORM\OneToMany(targetEntity: PaymentMethod::class, mappedBy: 'user')]
+        #[Groups(['user:read', 'user:write'])]
         private Collection $paymentMethods;
 
         /**
@@ -126,9 +149,11 @@
          * @var Collection<int, Reservation>
          */
         #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+        #[Groups(['user:read', 'user:write'])]
         private Collection $reservations;
 
         #[ORM\Column]
+        #[Groups(['user:read', 'user:write'])]
         private bool $isVerified = false;
 
 
