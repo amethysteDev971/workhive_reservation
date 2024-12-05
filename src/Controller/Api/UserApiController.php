@@ -107,4 +107,22 @@ class UserApiController extends AbstractController
         return new JsonResponse($response, JsonResponse::HTTP_OK, [], true);
     }
 
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
+    public function delete(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        // Récupération de l'utilisateur existant
+        $user = $em->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return new JsonResponse(['message' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        // Suppression de l'utilisateur
+        $em->remove($user);
+        $em->flush();
+
+        // Retourner une réponse avec succès
+        return new JsonResponse(['message' => 'User deleted successfully'], JsonResponse::HTTP_OK);
+    }
+
 }
