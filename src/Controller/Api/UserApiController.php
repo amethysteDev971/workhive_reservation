@@ -10,14 +10,48 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use OpenApi\Attributes as OA;
+use Nelmio\ApiDocBundle\Attribute\Model;
 
 
 #[Route('/api/users', name: 'api_users_')]
+#[OA\Tag(name: 'users', description: 'Operations for managing users')]
 class UserApiController extends AbstractController
 {
+
+    #[OA\Get(
+        path: '/',
+        operationId: 'getRooms',
+        description: "Returns a list of users matching the specified criteria.",
+        summary: 'List all users',
+        security: [['Bearer' => []]],
+        tags: ['rooms'],
+        responses: [
+            new OA\Response(
+                response: 200, 
+                description: 'Returns a list of users matching the specified criteria.',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(ref: new Model(type: User::class, groups: ['user:read']))
+                )
+            ),
+            new OA\Response(response: 401, description: 'Not allowed'),
+        ]
+    )]
     #[Route('/', name: 'list', methods: ['GET'])]
-    public function list(EntityManagerInterface $em, SerializerInterface $serializer): JsonResponse
+    public function list(EntityManagerInterface $em, SerializerInterface $serializer, Request $request): JsonResponse
     {
+        // dump($request);
+        $filters = [];
+        if ($request->query->has('filters')) {
+            dump($request->query->has('filters'));
+            $filtersParam = $request->query->get('filters');
+            $filters = is_array($filtersParam) ? $filtersParam : [$filtersParam];
+            $qb = $em->createQueryBuilder('r');
+            // $em->select
+            // https://www.doctrine-project.org/projects/doctrine-orm/en/3.3/reference/query-builder.html
+        }
+        
         $users = $em->getRepository(User::class)->findAll();
         $data = $serializer->serialize($users, 'json', ['groups' => 'user:read']);
         return new JsonResponse($data, 200, [], true);

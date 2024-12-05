@@ -1,9 +1,14 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: Workhive Reservation API - OpenAPI 3.0
+            description: This is a sample Room reservation Server based on the OpenAPI 3.0 specification.
+            contact:
+                email: amethyste.design@gmail.com 
             version: 1.0.0
+        servers:
+          - url: https://localhost
+            description: API v1 over HTTP (uses test data)
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

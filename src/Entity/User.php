@@ -14,12 +14,19 @@
     use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
     use Symfony\Component\Serializer\Annotation\Groups;
     use Symfony\Component\Validator\Constraints as Assert;
+    use OpenApi\Attributes as OA;
+    use Nelmio\ApiDocBundle\Attribute\Model;
 
     
 
     /**
      * Represents a user in the application.
      */
+    #[OA\Schema(
+        title: 'title Schema Attribute',
+        description: 'description Schema Attribute',
+        type: 'object'
+    )]
     #[ORM\Entity(repositoryClass: UserRepository::class)]
     #[ORM\Table(name: 'users')]
     #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -73,6 +80,7 @@
          */
         #[ORM\Column(enumType: UserRole::class)]
         #[Groups(['user:read', 'user:write'])]
+        #[OA\Property(ref: new Model(type: UserRole::class))]
         private ?UserRole $userRole;
 
         /**
